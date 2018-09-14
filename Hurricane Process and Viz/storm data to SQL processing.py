@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 
-
+###
+# @sarahbat (Sarah Battersby)
+#
+# Process NOAA NHC shapefiles and combine with US Census tract-level data in SQL Server 
+# Is a setup for working with the data in Tableau for examining social impacts of hurricanes
+#
+# CAVEAT: Currently hard codes many aspects of my own SQL Server Express setup (and, no, you don't get my password) 
+#         and has room for improvement to the workflow to take commandline inputs and do some initial process when
+#         when the NOAA data is in a wonky multi-part format.
+#
+# Python = 2.7
+###
 
 # TODO set up to run from commandline - input_shp, finalOutput_table, database_name
 # TODO can I go singlepart to multipart easily for the storm polys in SQL Server? Otherwise can take a long time to process
@@ -46,7 +57,9 @@ def ogr_2_sql(input_shp, epsg_code, db_name):
 
     subprocess.call(import_ogr)
 
-
+    
+# Run all SQL processing to combine Census and NOAA datasets
+# Assumes that Census tract-level data is already in your database
 def process_sql(db_name, input_data):
     input_shp_name = os.path.basename(input_data)[:-4]  # strip off .shp
 
