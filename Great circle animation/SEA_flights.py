@@ -1,5 +1,11 @@
-
-
+###
+# @sarahbat (Sarah Battersby)
+#
+# Generate vertices along great circle to create a flight path animation
+# Write result to TDE
+#
+# Python = 2.7
+###
 
 from tableausdk import Type
 from tableausdk.Extract import *
