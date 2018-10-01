@@ -1,4 +1,4 @@
-# @sarahbat (Sarah Battersby - sbattersby@tableau.com)
+# @sarahbat (Sarah Battersby)
 #
 # Read address data from csv, write geocoded results to csv
 # Adjust address based on the relevant comments in your input csv
