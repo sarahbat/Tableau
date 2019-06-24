@@ -21,7 +21,7 @@ Make array of inner ring polygons with reversed coordinates
 Input: Shapely geometry, number of interior rings to peruse
 Output: array of interior ring polygons with reversed vertex ordering
 '''
-def makeInnerRingArray(geom):
+def make_inner_ring_array(geom):
     innerRingPolys = []
     innerRingCount = len(geom.interiors)
     for i in range(0, innerRingCount):
@@ -43,8 +43,7 @@ def reverse_wkt_string(geom, opt_verbose=False):
         # deal with interior rings
         # did not test with multiple interior rings...
         try:
-            innerRingPolys = makeInnerRingArray(geom)
-            makeInnerRingArray(geom)
+            innerRingPolys = make_inner_ring_array(geom)
         except: 
             pass # no inner ring; move on...
         
@@ -66,7 +65,7 @@ def reverse_wkt_string(geom, opt_verbose=False):
         for i in range(0, polygonCount):
             innerRingPolys = []
             try:
-                innerRingPolys = makeInnerRingArray(geom[i])
+                innerRingPolys = make_inner_ring_array(geom[i])
             except: 
                 pass # no inner ring
             

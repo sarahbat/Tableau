@@ -5,12 +5,15 @@ Created on Mon Jun 24 15:09:17 2019
 @author: sbattersby
 """
 import shapely.wkt
-import wkt_vertex_flipper
+import wkt_vertex_flipper as wktFlip
+
+def main():
+    run_test()
 
 def test(wkt_string):
     geom = shapely.wkt.loads(wkt_string)
     print('Testing ' + geom.type)
-    reverse_wkt_string(geom, opt_verbose = True)
+    wktFlip.reverse_wkt_string(geom, opt_verbose = True)
 
 
 def run_test():
@@ -37,3 +40,7 @@ def run_test():
     test(wkt_polygon_hole)
     test(wkt_multipolygon)
     test(wkt_multipolygon_hole)
+    
+
+if __name__ == "__main__":
+    main()
