@@ -26,7 +26,7 @@ for row in r_reader:
     if row_count == 0: # header
         pass
     else:
-        gh = row[2]
+        gh = row[2] # because the geohash coordinates were in the third column in my csv
         latlon = pgh.decode(row[2])
         geo_writer.writerow([gh, latlon[1], latlon[0]])
     row_count += 1
