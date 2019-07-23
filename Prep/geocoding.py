@@ -4,8 +4,12 @@ Created on 7/18/19
 
 Demo of geocoding to convert address strings to lat/lon as part of a Tableau Prep workflow
 
-Assumes that you have a file with fields for Latitude, Longitude, and accuracy (I added those with a step in my Tableau Prep workflow, 
-then ran the script)
+Assumes that your address is coming in from separate fields of Address, City, State, Zip...modify the query to fit 
+whatever you are using for input.  All you need to do it mush everythign together into a single string to pass
+to the geocoding service.
+
+Also assumes that you have a file with fields for Latitude, Longitude, and accuracy for the geocoding output 
+(I added those with a step in my Tableau Prep workflow, then ran the script)
 
 Currently provides options for using Google API, Mapbox API, and Open Street Map
 Please pay attention to licensing restrictions on whatever service you use
