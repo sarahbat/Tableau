@@ -26,7 +26,7 @@ I take no responsibility for your geocoding too many addresses and incurring any
 
 ''' 
 Geocoding using the Google Maps geocoding service API
-Mapbox geocoding terms of service: https://developers.google.com/maps/documentation/geocoding/policies
+Google geocoding terms of service: https://developers.google.com/maps/documentation/geocoding/policies
 
 ****Requires a Google API Key****
 
