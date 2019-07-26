@@ -53,8 +53,30 @@ def Geocode_OSM(df):
 		if len(root.getchildren()) >= 1:
 			df.set_value(i, 'Longitude', root.find('./place').attrib['lon'])
 			df.set_value(i, 'Latitude', root.find('./place').attrib['lat'])
-			df.set_value(i, 'accuracy', 'OSM doesn\'t list accuracy values')
+			df.set_value(i, 'Accuracy', 'OSM doesn\'t list accuracy values')
 		
 
 	return df
 	
+
+'''
+Use get_output_schema() to define the schema you plan to return to Tableau Prep
+This allows you to return a dataframe that has new fields 
+
+The other option would be to just add the fields in to your data before running the script
+
+Do whatever is easiest - if you have a lot of fields in your original table and you want to keep
+them all, it's probably easiest to just delete this part of the script.
+'''
+def get_output_schema():
+	return pd.DataFrame({
+		'Accuracy' 	: prep_string(),
+		'Latitude' 	: prep_decimal(),
+		'Longitude' 	: prep_decimal(),
+		'Address' 	: prep_string(),
+		'City'		: prep_string(),
+		'State'		: prep_string(),
+		'Zip'		: prep_string(),
+		'Lat'		: prep_decimal(),
+		'Lng'		: prep_decimal()
+		})
