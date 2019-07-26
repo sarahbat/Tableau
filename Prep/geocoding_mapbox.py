@@ -70,6 +70,8 @@ The other option would be to just add the fields in to your data before running 
 Do whatever is easiest - if you have a lot of fields in your original table and you want to keep
 them all, it's probably easiest to just delete this part of the script.
 '''
+
+'''
 def get_output_schema():
 	return pd.DataFrame({
 		'Accuracy' 	: prep_string(),
@@ -82,3 +84,4 @@ def get_output_schema():
 		'Lat'		: prep_decimal(),
 		'Lng'		: prep_decimal()
 		})
+'''
