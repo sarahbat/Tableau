@@ -59,7 +59,7 @@ def Geocode_Google(df):
 		j = json.loads(req_body)
 		# return for first match listed
 		if 'location_type' in j['results'][0]['geometry']:
-			df.set_value(i, 'accuracy', j['results'][0]['geometry']['location_type'])
+			df.set_value(i, 'Accuracy', j['results'][0]['geometry']['location_type'])
 		if 'location' in j['results'][0]['geometry']:
 			df.set_value(i, 'Longitude', j['results'][0]['geometry']['location']['lng'])
 			df.set_value(i, 'Latitude', j['results'][0]['geometry']['location']['lat'])
