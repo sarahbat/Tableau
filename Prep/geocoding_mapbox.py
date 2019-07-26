@@ -52,7 +52,7 @@ def Geocode_Mapbox(df):
 		feature = j['features'][0]
 		# print(feature)
 		if 'accuracy' in feature['properties']:
-			df.set_value(i, 'accuracy', feature['properties']['accuracy'])
+			df.set_value(i, 'Accuracy', feature['properties']['accuracy'])
 		if 'center' in feature:
 			df.set_value(i, 'Longitude', feature['center'][0])
 			df.set_value(i, 'Latitude', feature['center'][1])
@@ -60,3 +60,25 @@ def Geocode_Mapbox(df):
 
 
 	return df
+
+'''
+Use get_output_schema() to define the schema you plan to return to Tableau Prep
+This allows you to return a dataframe that has new fields 
+
+The other option would be to just add the fields in to your data before running the script
+
+Do whatever is easiest - if you have a lot of fields in your original table and you want to keep
+them all, it's probably easiest to just delete this part of the script.
+'''
+def get_output_schema():
+	return pd.DataFrame({
+		'Accuracy' 	: prep_string(),
+		'Latitude' 	: prep_decimal(),
+		'Longitude' 	: prep_decimal(),
+		'Address' 	: prep_string(),
+		'City'		: prep_string(),
+		'State'		: prep_string(),
+		'Zip'		: prep_string(),
+		'Lat'		: prep_decimal(),
+		'Lng'		: prep_decimal()
+		})
