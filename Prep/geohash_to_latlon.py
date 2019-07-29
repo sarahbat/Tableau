@@ -11,6 +11,7 @@ requires pygeohash library
 
 import pygeohash as pgh
 
+
 def Get_LatLon(df):
 	for i in range(0, len(df)):
 		latLon = pgh.decode(df.iloc[i]['geohash'])
@@ -18,6 +19,20 @@ def Get_LatLon(df):
 		df.set_value(i, 'Longitude', latLon[1])
 
 	return df
+
+
+# Just in case you have to go from lat lon to geohash...
+# Remember to either add the geohash field in advance to your table in Prep
+# or edit the get_output_schema() 
+def Get_Geohash(df):
+	GEOHASH_PRECISION = 6
+
+	for i in range(0, len(df)):
+		geohash = pgh.encode(df.iloc[i]['Latitude'], df.iloc[i]['Longitude'], GEOHASH_PRECISION)
+		df.set_value(i, 'geohash', geohash)
+
+	return df
+
 
 '''
 Use get_output_schema() to define the schema you plan to return to Tableau Prep
@@ -33,5 +48,5 @@ def get_output_schema():
 	return pd.DataFrame({
 		'geohash'	: prep_string(),
 		'Latitude' 	: prep_decimal(),
-		'Longitude' 	: prep_decimal()
+		'Longitude' : prep_decimal()
 		})
