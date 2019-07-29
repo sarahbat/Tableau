@@ -3,6 +3,8 @@
 ####
 
 import csv
+import random
+import pygeohash as pgh
 
 numValues = 100
 geohashPrecision = 6
