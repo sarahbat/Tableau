@@ -11,10 +11,11 @@ requires pygeohash library
 
 import pygeohash as pgh
 
-def Get_Geohash(df):
-	latLon = pgh.decode(df.iloc[i]['geohash'])
-	df['Latitude'] = latLon[1]
-	df['Longitude'] = latLon[0]
+def Get_LatLon(df):
+	for i in range(0, len(df)):
+		latLon = pgh.decode(df.iloc[i]['geohash'])
+		df.set_value(i, 'Latitude', latLon[0])
+		df.set_value(i, 'Longitude', latLon[1])
 
 	return df
 
@@ -30,7 +31,7 @@ them all, it's probably easiest to just delete this part of the script.
 
 def get_output_schema():
 	return pd.DataFrame({
-		'geohash'	: prep_string()
+		'geohash'	: prep_string(),
 		'Latitude' 	: prep_decimal(),
-		'Longitude' : prep_decimal()
+		'Longitude' 	: prep_decimal()
 		})
