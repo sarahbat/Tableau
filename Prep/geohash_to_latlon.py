@@ -6,7 +6,7 @@ Demo of geohash to lat/lon conversion
 
 requires pygeohash library
 
-@author: sbattersby
+@author: sarahbat
 """
 
 import pygeohash as pgh
