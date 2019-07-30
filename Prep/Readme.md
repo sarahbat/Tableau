@@ -9,3 +9,6 @@ Exploring spatial analysis options using Python scripts in Prep.
 
 ## geohash to lat long
   Convert a geohash string to a latitude and longitude pair
+
+## what3words to lat long
+  Convert a what3words string to a latitude and longitude pair
