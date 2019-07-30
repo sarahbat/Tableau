@@ -43,7 +43,5 @@ def get_output_schema():
         return pd.DataFrame({
                 'w3w'         : prep_string(),
                 'Latitude'    : prep_decimal(),
-                'Longitude'   : prep_decimal(),
-                'lat'         : prep_decimal(),
-                'long'        : prep_decimal()
+                'Longitude'   : prep_decimal()
                 })
