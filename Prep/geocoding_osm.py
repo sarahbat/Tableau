@@ -21,7 +21,7 @@ doing pointless re-geocoding.
 So, geocode once, then save the results and only re-run on the addresses that haven't been geocoded yet :)
 I take no responsibility for your geocoding too many addresses and incurring any charges for the service(s) you use.
 
-@author: sbattersby
+@author: sarahbat
 """
 
 ''' 
