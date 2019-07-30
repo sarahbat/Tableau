@@ -4,7 +4,7 @@ Created on 7/30/19
 
 Demo of what3words to lat/lon
 requires what3words library
-@author: sbattersby
+@author: sarahbat
 
 """
 
