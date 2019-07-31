@@ -26,7 +26,22 @@ def Get_LatLon(df):
 
         return df
 
- 
+ '''
+ In case you want to go the other direction and take your lat/lon coordinates and go to what3words coordinates
+ This returns a different dataframe schema than the function that converts w3w to lat/lon, so you'll need
+ to edit your Prep flow or  the get_output_schema() function accordingly.
+ '''
+def Get_w3w(df):
+        W3W_API_KEY = 'YOUR_API_KEY_GOES_HERE'
+        g = what3words.Geocoder(W3W_API_KEY)
+
+        for i in range(0, len(df)):
+                res = g.convert_to_3wa(what3words.Coordinates(df.iloc[i]['lat'], df.iloc[i]['lon']))
+
+                df.set_value(i, 'what3words', res['words'])
+
+        return df        
+        
 '''
 Use get_output_schema() to define the schema you plan to return to Tableau Prep
 
