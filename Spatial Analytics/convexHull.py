@@ -18,7 +18,7 @@ of the outline of each cluster of customers."
 import geopandas as gpd
 from shapely.geometry import Point
 
-CSV_LOCATION = r'C:\Users\sbattersby\Downloads\testspacial.csv'
+CSV_LOCATION = r'C:\Users\sbattersby\Downloads\ConvexHull_demoData.csv'
 SHP_OUTPUT_LOCATION = r'C:\temp\shpOutput.shp'
 GROUP_FIELD = 'Actual RouteID' # the field that defines how points will be grouped
 LATITUDE_FIELD = 'Latitude' # the names for the fields with your x,y coordinates
