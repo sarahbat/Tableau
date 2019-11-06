@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Street View containers</title>
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_GOES_HERE"></script>
+   
+    <script>
+      
+// Patterned after Google Developers documentation 
+// https://developers.google.com/maps/documentation/javascript/streetview
+function initialize() {
+  var params = getQueryParams();
+  var viewLocation = new google.maps.LatLng(params.lat, params.lon);
+  var panorama = new google.maps.StreetViewPanorama(
+      document.getElementById('map-canvas'), {
+        position: viewLocation,
+        pov: {
+          heading: 198,
+          pitch: 0
+        }
+      });
+  //map.setStreetView(panorama);
+}
+function getQueryParams(){
+    var params = {};
+    var query = window.location.search.substring(1);
+    console.log("Params: " + query + " length: " + query.length);
+    if (query.length === 0) 
+    {
+      query = "lat=47.6480693&lon=-122.3379813";
+    }
+    console.log("query: " + query);
+      
+      
+    var vars = query.split("&");
+    for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        if(pair.length == 2)
+        {
+            params[pair[0]] = pair[1];
+        }
+     }
+     return params;
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>
