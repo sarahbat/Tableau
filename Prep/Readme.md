@@ -12,3 +12,7 @@ Exploring spatial analysis options using Python scripts in Prep.
 
 ## what3words to lat long
   Convert a what3words string to a latitude and longitude pair
+
+## Google Plus to / from lat long
+  Convert between Google Plus codes and latitude and longitude pairs using https://github.com/google/open-location-code/wiki/Plus-codes-API
+  
