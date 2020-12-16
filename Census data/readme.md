@@ -1,1 +1,1 @@
-Jupyter notebook to demonstrate methods for using the Census API to collect data 
+Jupyter notebook to demonstrate methods for using Python and the Census API to collect data 
