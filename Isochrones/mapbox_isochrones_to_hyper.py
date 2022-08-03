@@ -8,10 +8,10 @@ import json
 mb_token = os.environ.get("MAPBOX_API_KEY")
 
 # input dataset (in this case reading from a shapefile of points)
-pt_file_loc = r"C:\Users\sbattersby\Downloads\stpublicdata\LINKStations_4326.shp"
+pt_file_loc = r"your_point_spatial_file.shp"
 
 # output for the .hyper file
-path_to_hyper = r"c:\temp\wkt_test_hyper4.hyper"
+path_to_hyper = r"your_output_hyper_file.hyper"
 
 # Read the point data into a GeoPandas geodataframe
 # This is just a nice way to input the geometry from shapefile (and then store the isochrone polygons)
