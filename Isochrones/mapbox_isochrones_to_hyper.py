@@ -1,3 +1,22 @@
+'''
+Generate one or more isochrones (travel time polygons) around a *shapefile* of point locations at specified distances and for specified profiles
+Write result to a .hyper file for use in Tableau
+
+This code is written for understandability by non-coders, as opposed to efficient
+Edit as you see fit and as is relevant for your needs.
+
+Things you will edit:
+* pt_file_loc - where is your point shapefile?
+* path_to_hyper - where do you want to save the output .hyper
+    the .hyper is for use in Tableau, if you want something else, edit the code so the output goes somewhere else
+* profiles - put in the "profiles" that you want for isochrones (walking, cycling, and/or driving)
+* minutes - an array of distances.  Put in whatever distances you want.  Pay attention to the Mapbox pricing structure if you're worried about charges...
+* Either hard code your Mapbox API key (not recommended) or point to the relevant place where you keep it hidden
+
+Have fun...
+-Sarah Battersby (sarahbat@gmail.com)
+'''
+
 import geopandas as gpd
 import os
 import requests
