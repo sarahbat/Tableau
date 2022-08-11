@@ -2,6 +2,8 @@
 Generate one or more isochrones (travel time polygons) around a *shapefile* of point locations at specified distances and for specified profiles
 Write result to a .hyper file for use in Tableau
 
+Isochrones will go in separate COLUMNS for each distance/profile combination.  
+
 This code is written for understandability by non-coders, as opposed to efficient
 Edit as you see fit and as is relevant for your needs.
 
