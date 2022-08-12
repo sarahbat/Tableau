@@ -51,7 +51,7 @@ minutes = [10]
 for profile in profiles:
     for minute in minutes:
         print(f"Collecting isochrones for {minute} minutes {profile}...")
-        for i in range(0, 1):
+        for i in range(0, len(pt_data)):
             lat = pt_data.iloc[i].latitude
             lng = pt_data.iloc[i].longitude
 
