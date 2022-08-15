@@ -23,7 +23,7 @@ Notes
 
 
 Have at it...
--Sarah Battersby (sarahbat@gmail.com)
+-Sarah Battersby 
 '''
 import geopandas as gpd
 from shapely.geometry import Point
