@@ -1,6 +1,6 @@
 
 '''
-Generate one or more isochrones (travel time polygons) around a *shapefile* of point locations at specified distances and for specified profiles
+Generate one or more isochrones (travel time polygons) around a *CSV* of point locations at specified distances and for specified profiles
 Write result to a .hyper file for use in Tableau
 
 Isochrones will go in separate COLUMNS for each distance/profile combination.  
@@ -17,7 +17,7 @@ Things you will edit:
 * Either hard code your Mapbox API key (not recommended) or point to the relevant place where you keep it hidden
 
 Have fun...
--Sarah Battersby (sarahbat@gmail.com)
+-Sarah Battersby 
 '''
 import geopandas as gpd
 import os
@@ -30,7 +30,6 @@ mb_token = os.environ.get("MAPBOX_API_KEY")
 
 # input dataset (csv file with columns named "latitude" and "longitude")
 # if you name your lat/lng fields something else, you need to edit the call out to the API to use the right fields
-# I'm not going out of my way to be flexible and delightful, just aiming for readable and functional
 pt_file_loc = r"your_input_file_here.csv"
 
 # output for the .hyper file
