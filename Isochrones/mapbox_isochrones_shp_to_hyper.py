@@ -16,7 +16,7 @@ Things you will edit:
 * Either hard code your Mapbox API key (not recommended) or point to the relevant place where you keep it hidden
 
 Have fun...
--Sarah Battersby (sarahbat@gmail.com)
+-Sarah Battersby 
 '''
 
 import geopandas as gpd
