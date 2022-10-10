@@ -7,6 +7,8 @@ Standard US Census cartographic boundary files (just the 50 states), modified to
 
 Note that you cannot use the standard Tableau map tiles, geocoding roles, or geographic search with these files as they do require a bit of creative lying about the map projection.
 
+Hyper files contain the original geographic data (Geom), projected data (Geom Albers), and an outline (Geom Albers Outline) for added cartographic bling opportunities.
+
 * States (1:20m)
 * Counties (1:20m)
 * Census tracts (1:500k - but simplified using Mapshaper)
