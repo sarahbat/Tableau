@@ -1,24 +1,21 @@
-# # I stole all my good comments and formatting from Ken Flerlage
-# Ken has another nice variant on this problem here: https://github.com/flerlagekr/NSW-Property-Sales/blob/main/Combine.py
-#
 # This code will process the yearly property sales data files from the NSW government website.
 # The file format changed in 2001, so this assumes only data after that year.
 #
 # Notes on structuring your data
-#
-# 1) It assumes a master zip file that contains a set of individual weekly zip files
-# 2) The sample data I used is a zip file for 2017 with 52 zipped weekly files inside.  Each weekly file had a set of .dat inside
-# 3) This code is organized so that you should be able to work with a single master zip with many years of weekly zips inside
-# --- I did not see how big the data would get before you have some memory freak out on your computer
+# There are two different formats for the downloaded data, this script will deal with both
+# 2001-2014: yearly zip file with non-zipped folders inside, each containing some .dat files
+# 2015-2023: yearly zip file with zipped files inside, with each of those then containing folders with .dat
 #
 # Notes:
-#
 # - This will write a Tableau .hyper file at the end with all of the data.  If you want a .csv, export the Pandas dataframe
+#
+# Ken Flerlage has another nice variant on this problem here: https://github.com/flerlagekr/NSW-Property-Sales/blob/main/Combine.py
 
 import pandas as pd
 from zipfile import ZipFile
 
-zip_of_zips_loc = r'C:\Users\sarah\Downloads\wetransfer_2017_2023-02-05_0201.zip'
+### Big dataset from Mark T. with differing file structures (2001-2014 are same; 2015-2023 are same)
+zip_of_zips_loc = r'C:\Users\sarah\Downloads\wetransfer_2002-zip_2023-02-08_2104.zip'
 
 # column names from the Current_Property_Sales_Data_File_format_2001_to_Current.pdf
 column_names = ["Record Type", "District Code", "Property ID", "Sale Counter", "Download Datetime", "Property Name",
@@ -28,6 +25,8 @@ column_names = ["Record Type", "District Code", "Property ID", "Sale Counter", "
 
 #-------------------------------------------------------------------------------------
 # Helper function to read a single .dat file and return a Pandas dataframe
+# It'll kick up a warning when it encounters bad rows, and then skip over them
+# I haven't checked how many of these are in the 'B' rows that we want to keep
 #-------------------------------------------------------------------------------------
 def read_one_file(input_file, sep_string):
        df = pd.read_csv(input_file, sep=sep_string, names=column_names, engine='python', on_bad_lines='warn')
@@ -47,15 +46,24 @@ df_list = []
 
 # walk through the master zip file
 z_master = ZipFile(zip_of_zips_loc)
+# list with each year of zipped data in the master zip
 z_master_contents = z_master.namelist()
-for inner_file in z_master_contents:
-       # print(f"{inner_file}")
-       # crack into the zip file inside
-       z_inner = ZipFile(z_master.open(inner_file))
 
-       # walk through the inner zip file and grab all the .dat
-       for text_file in z_inner.infolist():
-              # print(f"\t{text_file.filename}")
+for year in z_master_contents:
+       print(f"{year}")
+       # crack into the zip file inside
+       z_inner = ZipFile(z_master.open(year))
+
+       # if the inner file is a zip (2015-2023)
+       if z_inner.filename.lower().endswith('.zip'):
+              # walk through the inner zip file and grab all the .dat
+              for text_file in z_inner.infolist():
+                     # print(f"\t{text_file.filename}")
+                     if text_file.filename.lower().endswith('.dat'):
+                            df = read_one_file(z_inner.open(text_file.filename), ";")
+                            df_list.append(df)
+       # otherwise, just look for the .dat directly
+       elif z_inner.filename.lower().endwith('.dat'):
               if text_file.filename.lower().endswith('.dat'):
                      df = read_one_file(z_inner.open(text_file.filename), ";")
                      df_list.append(df)
