@@ -4,88 +4,61 @@
 # Notes on structuring your data
 # There are two different formats for the downloaded data, this script will deal with both
 # 2001-2014: yearly zip file with non-zipped folders inside, each containing some .dat files
+#      Master Zip File
+#        |__ year.ZIP
+#          |__ year
+#            |__ weekly folder
+#              |__ .dat files
 # 2015-2023: yearly zip file with zipped files inside, with each of those then containing folders with .dat
+#      Master Zip File
+#        |__year.ZIP
+#          |__weekly.ZIP
+#            |__weekly folder
+#              |__ .dat files
 #
 # Notes:
-# - This will write a Tableau .hyper file at the end with all of the data.  If you want a .csv, export the Pandas dataframe
+# - This script is structured to just write a Tableau .hyper file; it does not produce a .csv
 #
 # Ken Flerlage has another nice variant on this problem here: https://github.com/flerlagekr/NSW-Property-Sales/blob/main/Combine.py
 
 import pandas as pd
+import numpy as np
 from zipfile import ZipFile
 
 ### Big dataset from Mark T. with differing file structures (2001-2014 are same; 2015-2023 are same)
 zip_of_zips_loc = r'C:\Users\sarah\Downloads\wetransfer_2002-zip_2023-02-08_2104.zip'
 
-# column names from the Current_Property_Sales_Data_File_format_2001_to_Current.pdf
-column_names = ["Record Type", "District Code", "Property ID", "Sale Counter", "Download Datetime", "Property Name",
-             "Unit Number", "House Number", "Street Name", "Locality", "Post Code", "Area", "Area Type",
-             "Contract Date", "Settlement Date", "Purchase Price", "Zoning", "Nature of Property", "Primary Purpose",
-             "Strata Lot Number", "Component Code", "Sale Code", "Interest Percent", "Dealing Number", "Unknown Field"]
+### Location for output .hyper file
+PATH_TO_HYPER = r'C:\Users\sarah\Downloads\Mark_DAT_data.hyper'
 
 #-------------------------------------------------------------------------------------
 # Helper function to read a single .dat file and return a Pandas dataframe
-# It'll kick up a warning when it encounters bad rows, and then skip over them
-# I haven't checked how many of these are in the 'B' rows that we want to keep
+# It currently just skips bad rows without throwing a warning, but could change to on_bad_lines='warn'
 #-------------------------------------------------------------------------------------
 def read_one_file(input_file, sep_string):
-       df = pd.read_csv(input_file, sep=sep_string, names=column_names, engine='python', on_bad_lines='warn')
+       df = pd.read_csv(input_file, sep=sep_string, names=column_names, engine='python', on_bad_lines='skip')
        # trim out all but the "B" rows
        df = df[df["Record Type"] == "B"]
+
+       # NaN -> None & convert things to strings (makes it easier to write to .hyper)
+       df = df.replace(np.nan, None)
+       df = df.applymap(str)
+
        return df
 
+#-------------------------------------------------------------------------------------
+# Helper function to insert a single Pandas df to a .hyper file
+#-------------------------------------------------------------------------------------
+def insert_one_df(df, inserter):
+       for index, row in df.iterrows():
+              inserter.add_row(row)
 
 #-------------------------------------------------------------------------------------
-# Process all the files
-# Opens the master zip, then looks in each internal zip to harvest the .dat files
-# makes a list with a Pandas dataframe for each .dat
-# concatenates everything into a single dataframe
-#-------------------------------------------------------------------------------------
-# list to hold all of the .dat contents
-df_list = []
-
-# walk through the master zip file
-z_master = ZipFile(zip_of_zips_loc)
-# list with each year of zipped data in the master zip
-z_master_contents = z_master.namelist()
-
-for year in z_master_contents:
-       print(f"{year}")
-       # crack into the zip file inside
-       z_inner = ZipFile(z_master.open(year))
-
-       # if the inner file is a zip (2015-2023)
-       if z_inner.filename.lower().endswith('.zip'):
-              # walk through the inner zip file and grab all the .dat
-              for text_file in z_inner.infolist():
-                     # print(f"\t{text_file.filename}")
-                     if text_file.filename.lower().endswith('.dat'):
-                            df = read_one_file(z_inner.open(text_file.filename), ";")
-                            df_list.append(df)
-       # otherwise, just look for the .dat directly
-       elif z_inner.filename.lower().endwith('.dat'):
-              if text_file.filename.lower().endswith('.dat'):
-                     df = read_one_file(z_inner.open(text_file.filename), ";")
-                     df_list.append(df)
-
-# squish it all together at the end
-df_all = pd.concat(df_list, axis=0, ignore_index=True)
-
-
-#-------------------------------------------------------------------------------------
-# If you're going to use it in Tableau, why not just write it to a .hyper file?
+# Process all of the data in the master .zip file
+# Write the data directly to a .hyper
 #-------------------------------------------------------------------------------------
 from tableauhyperapi import HyperProcess, Connection, TableDefinition, SqlType, Telemetry, Inserter, CreateMode, \
-       TableName, escape_string_literal
-
-PATH_TO_HYPER = 'test_hyper_extract.hyper'
-
-# Step 0: a little data cleaning to keep the Hyper API happy
-# NaN -> None
-import numpy as np
-df_all_clean = df_all.replace(np.nan, None)
-# make all strings (just easier for dealing with the write to .hyper)
-df_all_clean = df_all_clean.applymap(str)
+       TableName
 
 # Step 1: Start a new private local Hyper instance
 with HyperProcess(Telemetry.SEND_USAGE_DATA_TO_TABLEAU, 'myapp') as hyper:
@@ -99,6 +72,7 @@ with HyperProcess(Telemetry.SEND_USAGE_DATA_TO_TABLEAU, 'myapp') as hyper:
               print("Schema created...")
 
               # Step 4: Create the table definition
+              # Column names from the Current_Property_Sales_Data_File_format_2001_to_Current.pdf
               schema = TableDefinition(table_name=TableName('Extract', 'Extract'),
                                        columns=[
                                               TableDefinition.Column("Record Type", SqlType.text()),
@@ -126,6 +100,7 @@ with HyperProcess(Telemetry.SEND_USAGE_DATA_TO_TABLEAU, 'myapp') as hyper:
                                               TableDefinition.Column("Interest Percent", SqlType.text()),
                                               TableDefinition.Column("Dealing Number", SqlType.text()),
                                               TableDefinition.Column("Unknown Field", SqlType.text()),
+                                              TableDefinition.Column("FileName", SqlType.text())
                                        ])
               print("Table definition created...")
 
@@ -133,11 +108,41 @@ with HyperProcess(Telemetry.SEND_USAGE_DATA_TO_TABLEAU, 'myapp') as hyper:
               connection.catalog.create_table(schema)
               print("Table created...")
 
-              print("Starting to insert data...")
+              # Step 6: Insert the data
               with Inserter(connection, schema) as inserter:
-                     for index, row in df_all_clean.iterrows():
-                            inserter.add_row(row)
-                     inserter.execute()
+                     print("Processing and inserting data...")
+                     archive = ZipFile(zip_of_zips_loc, mode='r')
+                     archive_contents = archive.namelist()
 
+                     for year_zip in archive_contents:
+                            # Top level folder should contain set of .zip - one for each year
+                            if year_zip[-3:] == 'zip':  # marginal check; only move forward with processing .zips
+                                   # open the year zip and retrieve list of files
+                                   year_files = ZipFile(archive.open(year_zip))
+                                   year_files_names = year_files.namelist()
+                                   print(f'\t...{year_zip}')
+
+                                   # the contents should either be a .zip or a .dat (structure changed in 2015)
+                                   for year_item in year_files_names:
+                                          # after 2015 - child zip inside parent zip
+                                          if year_item[-3:].lower() == 'zip' and not year_item[
+                                                                                     :2] == '__':  # skip internal mac files
+                                                 weeks = ZipFile(year_files.open(year_item))
+                                                 weeks_names = weeks.namelist()
+                                                 for week in weeks_names:
+                                                        if week[-3:].lower() == 'dat':
+                                                               df = read_one_file(
+                                                                      weeks.open(week), ";")
+                                                               df['FileName'] = week
+                                                               insert_one_df(df, inserter)
+
+                                          # 2014 and earlier - .dat directly inside the parent zip
+                                          elif year_item[-3:].lower() == 'dat':
+                                                 df = read_one_file(
+                                                        year_files.open(year_item), ";")
+                                                 df['FileName'] = year_item
+                                                 insert_one_df(df, inserter)
+                     archive.close()
+                     inserter.execute()
               print("Boom!")
        print("The connection to the Hyper file is closed.")
