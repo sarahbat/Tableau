@@ -31,11 +31,19 @@ zip_of_zips_loc = r'C:\Users\sarah\Downloads\wetransfer_2002-zip_2023-02-08_2104
 ### Location for output .hyper file
 PATH_TO_HYPER = r'C:\Users\sarah\Downloads\Mark_DAT_data.hyper'
 
+# Column names from the Current_Property_Sales_Data_File_format_2001_to_Current.pdf
+column_names = ["Record Type", "District Code", "Property ID", "Sale Counter", "Download Datetime",
+                        "Property Name", "Unit Number", "House Number", "Street Name", "Locality", "Post Code", "Area",
+                        "Area Type","Contract Date", "Settlement Date", "Purchase Price", "Zoning",
+                        "Nature of Property", "Primary Purpose","Strata Lot Number","Component Code", "Sale Code",
+                        "Interest Percent", "Dealing Number", "Unknown Field"]
+
 #-------------------------------------------------------------------------------------
 # Helper function to read a single .dat file and return a Pandas dataframe
 # It currently just skips bad rows without throwing a warning, but could change to on_bad_lines='warn'
 #-------------------------------------------------------------------------------------
 def read_one_file(input_file, sep_string):
+
        df = pd.read_csv(input_file, sep=sep_string, names=column_names, engine='python', on_bad_lines='skip')
        # trim out all but the "B" rows
        df = df[df["Record Type"] == "B"]
